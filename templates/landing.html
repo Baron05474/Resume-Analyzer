@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Analyzer</title>
+    <style>
+        body { margin: 0; background: linear-gradient(to right, #1e3c72, #2a5298); color: white; font-family: sans-serif; }
+        .container { display: flex; height: 100vh; justify-content: center; align-items: center; }
+        .box { width: 800px; display: flex; background: white; color: black; border-radius: 15px; overflow: hidden; box-shadow: 0px 0px 20px rgba(0,0,0,0.3); }
+        .left { width: 50%; background: #2a5298; color: white; padding: 40px; }
+        .right { width: 50%; padding: 40px; }
+        h1 { margin-bottom: 10px; }
+        input { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #2a5298; color: white; border: none; cursor: pointer; font-size: 16px; }
+        button:hover { background: #1e3c72; }
+        .toggle { text-align: center; margin-top: 10px; cursor: pointer; color: blue; }
+        .form { display: none; }
+        .active { display: block; }
+        .otp-box { display: none; background: #eef2f7; padding: 15px; border-radius: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="box">
+        <div class="left">
+            <h1>Resume Analyzer</h1>
+            <p>Upload your resume and get AI-based feedback, score, and improvement suggestions instantly.</p>
+            <p>✔ ATS Score</p>
+            <p>✔ Skill Analysis</p>
+            <p>✔ Feedback</p>
+        </div>
+
+        <div class="right">
+            <div id="loginForm" class="form active">
+                <h2>Login</h2>
+                <input type="email" placeholder="Email" id="loginEmail">
+                <input type="password" placeholder="Password" id="loginPassword">
+                <button onclick="loginUser()">Login</button>
+                <div class="toggle" onclick="showSignup()">Create new account</div>
+            </div>
+
+            <div id="signupForm" class="form">
+                <h2>Sign Up</h2>
+                <div id="inputsSection">
+                    <input type="text" placeholder="Full Name" id="signupName">
+                    <input type="email" placeholder="Email" id="signupEmail">
+                    <input type="password" placeholder="Password" id="signupPassword">
+                    <button onclick="registerUser()">Send OTP</button>
+                </div>
+                
+                <div id="otpSection" class="otp-box">
+                    <p style="margin: 0 0 10px 0; font-size: 14px; color: green;">A verification code has been sent to your email.</p>
+                    <input type="text" placeholder="Enter 6-Digit OTP" id="otpInput">
+                    <button onclick="verifyOtpCode()" style="background: green;">Verify & Create Account</button>
+                </div>
+                
+                <div class="toggle" onclick="showLogin()">Already have account? Login</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showSignup() {
+        document.getElementById("loginForm").classList.remove("active");
+        document.getElementById("signupForm").classList.add("active");
+        document.getElementById("otpSection").style.display = "none";
+        document.getElementById("inputsSection").style.display = "block";
+    }
+
+    function showLogin() {
+        document.getElementById("signupForm").classList.remove("active");
+        document.getElementById("loginForm").classList.add("active");
+    }
+
+    // Request for OTP send
+    async function registerUser() {
+        const nameInput = document.getElementById("signupName").value.trim();
+        const emailInput = document.getElementById("signupEmail").value.trim();
+        const passwordInput = document.getElementById("signupPassword").value.trim();
+
+        if (!nameInput || !emailInput || !passwordInput) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        try {
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: nameInput, email: emailInput, password: passwordInput })
+            });
+            const data = await response.json();
+            alert(data.message);
+            
+            if (response.status === 200) {
+                document.getElementById("inputsSection").style.display = "none";
+                document.getElementById("otpSection").style.display = "block"; // OTP box on
+            }
+        } catch (error) {
+            alert("Server connection error!");
+        }
+    }
+
+    // OTP code mathch here
+        async function verifyOtpCode() {
+        const otpVal = document.getElementById("otpInput").value.trim();
+        if (!otpVal) {
+            alert("Please enter your OTP!");
+            return;
+        }
+
+        try {
+            const response = await fetch('/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ otp: otpVal })
+            });
+            const data = await response.json();
+            alert(data.message);
+
+            if (response.status === 200) {
+                showLogin(); // On success, you will be redirected to the login page
+            }
+        } catch (error) {
+            alert("OTP verification failed");
+        }
+    }
+    
+
+    // Login function
+    async function loginUser() {
+        const emailInput = document.getElementById("loginEmail").value.trim();
+        const passwordInput = document.getElementById("loginPassword").value.trim();
+
+        if (!emailInput || !passwordInput) {
+            alert("Please enter both your email and password");
+            return;
+        }
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailInput, password: passwordInput })
+            });
+            const data = await response.json();
+            
+            if (response.status === 200) {
+                window.location.href = `/dashboard`;
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert("Unable to log in.");
+        }
+    }
+</script>
+</body>
+</html>

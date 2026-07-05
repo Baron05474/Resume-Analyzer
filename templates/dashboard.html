@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Resume Analyzer</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f7f6; color: #333; }
+        .header { background: #2a5298; color: white; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; position: relative; }
+        .logout-btn { position: absolute; right: 20px; top: 22px; background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .main-container { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .upload-section { border: 2px dashed #2a5298; padding: 30px; text-align: center; border-radius: 8px; background: #f9fbfd; cursor: pointer; }
+        .upload-section input { display: none; }
+        .btn-check { display: block; width: 100%; padding: 12px; background: #2a5298; color: white; border: none; font-size: 18px; margin-top: 20px; border-radius: 5px; cursor: pointer; }
+        .btn-check:hover { background: #1e3c72; }
+        .result-box { margin-top: 30px; padding: 20px; background: #eef2f7; border-left: 5px solid #2a5298; border-radius: 4px; white-space: pre-line; display: none; }
+        .loading { display: none; text-align: center; font-weight: bold; color: #2a5298; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        Welcome, {{ name }}!
+        <button class="logout-btn" onclick="location.href='/logout'">Logout</button>
+    </div>
+
+    <div class="main-container">
+        <h3 style="text-align: center;">Upload your resume to get AI Insights</h3>
+        
+        <div class="upload-section" onclick="document.getElementById('fileInput').click()">
+            <p id="fileNameDisplay">Drag & drop or Click to upload Resume (PDF only)</p>
+            <input type="file" id="fileInput" accept=".pdf" onchange="updateFileName()">
+        </div>
+
+        <button class="btn-check" onclick="uploadAndAnalyze()">Check Resume</button>
+        
+        <div class="loading" id="loader">AI is analyzing your resume... Please wait..</div>
+
+        <div class="result-box" id="resultBox">
+            <h3>AI Analysis Feedback:</h3>
+            <p id="analysisContent"></p>
+        </div>
+    </div>
+
+    <script>
+        function updateFileName() {
+            const input = document.getElementById('fileInput');
+            const display = document.getElementById('fileNameDisplay');
+            if(input.files.length > 0) {
+                display.innerText = "Selected: " + input.files[0].name;
+                display.style.color = "green";
+            }
+        }
+
+        async function uploadAndAnalyze() {
+            const fileInput = document.getElementById('fileInput');
+            const loader = document.getElementById('loader');
+            const resultBox = document.getElementById('resultBox');
+            const analysisContent = document.getElementById('analysisContent');
+
+            if (fileInput.files.length === 0) {
+                alert("Please select a PDF file first.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("resume", fileInput.files[0]);
+
+            loader.style.display = "block";
+            resultBox.style.display = "none";
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                loader.style.display = "none";
+
+                if (data.message === "Success") {
+                    resultBox.style.display = "block";
+                    analysisContent.innerText = data.analysis;
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                loader.style.display = "none";
+                alert("An error occurred while processing the file.");
+            }
+        }
+    </script>
+</body>
+</html>
