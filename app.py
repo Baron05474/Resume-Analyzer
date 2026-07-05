@@ -6,7 +6,7 @@ import os
 from email.mime.text import MIMEText
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
 from pypdf import PdfReader
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 load_dotenv()
 app = Flask(__name__)
@@ -14,7 +14,7 @@ app.secret_key = "super_secret_session_key_for_resume_analyzer"  # for safety
 
 # Gemini API Key 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-client = genai.Client(api_key=GEMINI_API_KEY)
+genai.configure(api_key=GEMINI_API_KEY)
 
 # For sending OTP to user Email
 SMTP_SERVER = "smtp.gmail.com"
