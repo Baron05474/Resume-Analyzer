@@ -19,7 +19,8 @@ genai.configure(api_key=GEMINI_API_KEY)
 # For sending OTP to user Email
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SENDER_EMAIL = "project.verify.ai@gmail.com"        # My Email account
+SENDER_EMAIL = "project.verify.ai@gmail.com"# My Email account
+SENDER_PASSWORD = os.getenv("PROVIDER_PASSWORD")
 TEMP_OTP_STORE = {}  # for sending email 16 digit pass
 
 # Database Setup 
