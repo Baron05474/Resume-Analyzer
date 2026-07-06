@@ -103,9 +103,11 @@
         }
     }
 
-    // OTP code mathch here
-        async function verifyOtpCode() {
+    // OTP code match here
+    async function verifyOtpCode() {
         const otpVal = document.getElementById("otpInput").value.trim();
+        const emailInput = document.getElementById("signupEmail").value.trim(); // ইমেইল রিড করার জন্য নতুন লাইন
+
         if (!otpVal) {
             alert("Please enter your OTP!");
             return;
@@ -115,13 +117,13 @@
             const response = await fetch('/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ otp: otpVal })
+                body: JSON.stringify({ otp: otpVal, email: emailInput }) // বডিতে ইমেইল পাঠানো হলো
             });
             const data = await response.json();
             alert(data.message);
 
             if (response.status === 200) {
-                showLogin(); // On success, you will be redirected to the login page
+                showLogin(); 
             }
         } catch (error) {
             alert("OTP verification failed");

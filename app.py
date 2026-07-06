@@ -20,7 +20,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 SENDER_EMAIL = "project.verify.ai@gmail.com"        # My Email account
-SENDER_PASSWORD = os.getenv("PROVIDER_PASSWORD")  # for sending email 16 digit pass
+TEMP_OTP_STORE = {}  # for sending email 16 digit pass
 
 # Database Setup 
 def init_db():
@@ -110,9 +110,8 @@ def signup():
     otp = str(random.randint(1000, 9999))
     
     # Temporarily store user data in the session for verification
-    session['temp_user'] = {
+    TEMP_OTP_STORE[email] = {
         "name": name,
-        "email": email,
         "password": password,
         "otp": otp
     }
@@ -127,7 +126,10 @@ def signup():
 def verify_otp():
     data = request.json
     user_otp = data.get("otp")
-    temp_user = session.get("temp_user")
+    email = data.get("email")  # Email sent from frontend
+
+    # Reading data from global store
+    temp_user = TEMP_OTP_STORE.get(email)
 
     if not temp_user:
         return jsonify({"message": "Verification session has expired or is invalid."}), 400
@@ -138,12 +140,12 @@ def verify_otp():
             cursor = conn.cursor()
             cursor.execute(
                 "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-                (temp_user['name'], temp_user['email'], temp_user['password'])
+                (temp_user['name'], email, temp_user['password'])
             )
             conn.commit()
             conn.close()
             
-            session.pop('temp_user', None) # Remove Temporary Session Data
+            TEMP_OTP_STORE.pop(email, None) # Cleaning up data
             return jsonify({"message": "Account Created Successfully! Log In Now"}), 200
         except Exception as e:
             return jsonify({"message": f"Database Error: {str(e)}"}), 500
