@@ -18,7 +18,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 # For sending OTP to user Email
 SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
+SMTP_PORT = 465
 SENDER_EMAIL = "project.verify.ai@gmail.com"# My Email account
 SENDER_PASSWORD = os.getenv("PROVIDER_PASSWORD")
 TEMP_OTP_STORE = {}  # for sending email 16 digit pass
@@ -59,10 +59,8 @@ Resume Analyzer Team"""
         msg["From"] = SENDER_EMAIL
         msg["To"] = receiver_email
 
-        # For gimail SSL/TLs connection handel
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.ehlo()  # Identify server
-        server.starttls()  # On sequrity connection
+        # For gimail SSL connection handel
+        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.ehlo()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, receiver_email, msg.as_string())
