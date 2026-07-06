@@ -209,7 +209,7 @@ def analyze():
             # Giminni free API
             prompt = f"Analyze this resume carefully. Provide an ATS Score out of 100, brief feedback, strengths, and improvement areas. Resume text:\n\n{resume_text}"
             
-            response = client.models.generate_content(
+            response = genai.models.generate_content(
                 model='gemini-2.5-flash',
                 contents=prompt,
             )
@@ -224,6 +224,6 @@ def analyze():
     return jsonify({"message": "Only PDF files are allowed."}), 400
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+        import os
+        port = int(os.environ.get("PORT", 5000))
+        app.run(host="0.0.0.0", port=port, debug=True)
