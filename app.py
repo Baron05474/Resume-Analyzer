@@ -51,7 +51,7 @@ Your secure Email Verification OTP is: {otp}
 Please use this code to complete your registration. Do not share this OTP with anyone.
 
 Best regards,
-Resume Analyzer Team"""
+Baron Bhowmick"""
 
         msg = MIMEText(email_content)
         msg["Subject"] = "🎯 Verify Your Account - Resume Analyzer"
