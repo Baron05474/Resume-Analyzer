@@ -16,10 +16,10 @@ app.secret_key = "super_secret_session_key_for_resume_analyzer"  # for safety
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 
-# For sending OTP to user Email
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465
-SENDER_EMAIL = "project.verify.ai@gmail.com"# My Email account
+# For sending OTP using breovo to user Email
+SMTP_SERVER = "smtp-relay.brevo.com"
+SMTP_PORT = 587
+SENDER_EMAIL = "b11287001@smtp-brevo.com"
 SENDER_PASSWORD = os.getenv("PROVIDER_PASSWORD")
 TEMP_OTP_STORE = {}  # for sending email 16 digit pass
 
@@ -41,9 +41,8 @@ def init_db():
 init_db()
 
 # Function for sending otp
-def send_otp_email(receiver_email,name, otp):
+def send_otp_email(receiver_email, name, otp):
     try:
-    
         email_content = f"""Hello {name},
 
 Thank you for registering on Resume Analyzer. 
@@ -56,21 +55,18 @@ Resume Analyzer Team"""
 
         msg = MIMEText(email_content)
         msg["Subject"] = "🎯 Verify Your Account - Resume Analyzer"
-        msg["From"] = SENDER_EMAIL
+        msg["From"] = "project.verify.ai@gmail.com"
         msg["To"] = receiver_email
-
-        # For gimail SSL connection handel
-        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
-        server.ehlo()
+        
+        # Brevo SMTP connection
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls() 
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, receiver_email, msg.as_string())
         server.quit()
         return True
     except Exception as e:
-        # If mail send is fail 
-        print("\n--- EMAIL SENDING ERROR LOG ---")
-        print(e)
-        print("--------------------------------\n")
+        print(f"Error: {e}")
         return False
 
 # Routes and APIs
