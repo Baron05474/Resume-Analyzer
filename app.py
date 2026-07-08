@@ -43,32 +43,22 @@ init_db()
 # Function for sending otp
 def send_otp_email(receiver_email, name, otp):
     try:
-        email_content = f"""Hello {name},
-
-Thank you for registering on Resume Analyzer. 
-Your secure Email Verification OTP is: {otp}
-
-Please use this code to complete your registration. Do not share this OTP with anyone.
-
-Best regards,
-Baron Bhowmick"""
-
+        email_content = f"Hello {name}, your OTP is: {otp}"
         msg = MIMEText(email_content)
-        msg["Subject"] = "🎯 Verify Your Account - Resume Analyzer"
+        msg["Subject"] = "Verify Your Account - Resume Analyzer"
         msg["From"] = "project.verify.ai@gmail.com"
         msg["To"] = receiver_email
         
-        # Brevo SMTP connection
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        # কানেকশন টাইমআউট সেট করা হয়েছে
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=30) 
         server.starttls() 
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, receiver_email, msg.as_string())
         server.quit()
         return True
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"CRITICAL SMTP ERROR: {e}") # লগে এররটি স্পষ্ট দেখার জন্য
         return False
-
 # Routes and APIs
 
 @app.route("/")
@@ -84,38 +74,45 @@ def dashboard():
 # ১. Sign-up Initiation and OTP Sending
 @app.route("/signup", methods=["POST"])
 def signup():
+    print("LOG: Signup route accessed.") # ডিবাগিং লগ ১
     data = request.json
     name = data.get("name")
     email = data.get("email")
     password = data.get("password")
-
+    
     if not name or not email or not password:
         return jsonify({"message": "Please fill in all fields correctly."}), 400
 
-    conn = sqlite3.connect("users.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-    existing_user = cursor.fetchone()
-    conn.close()
+    try:
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        existing_user = cursor.fetchone()
+        conn.close()
+    except Exception as e:
+        print(f"LOG: Database error: {e}")
+        return jsonify({"message": "Database connection error."}), 500
 
     if existing_user:
         return jsonify({"message": "This email is already registered."}), 400
 
-    # 4 digit Generate OTP
+    # 4 digit otp
     otp = str(random.randint(1000, 9999))
     
-    # Temporarily store user data in the session for verification
     TEMP_OTP_STORE[email] = {
         "name": name,
         "password": password,
         "otp": otp
     }
+    
+    print(f"LOG: Attempting to send OTP to {email}") # ডিবাগিং লগ ২
 
-    if send_otp_email(email,name, otp):
+    if send_otp_email(email, name, otp):
+        print("LOG: OTP sent successfully.") # ডিবাগিং লগ ৩
         return jsonify({"message": "OTP has been sent to your email successfully."}), 200
     else:
+        print("LOG: Failed to send OTP email.") # ডিবাগিং লগ ৪
         return jsonify({"message": "Failed to send the OTP email. Please check your email configuration."}), 500
-
 # ২. Verify OTP and Create the Account
 @app.route("/verify-otp", methods=["POST"])
 def verify_otp():
