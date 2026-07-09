@@ -60,7 +60,6 @@
         </div>
     </div>
 </div>
-
 <script>
     function showSignup() {
         document.getElementById("loginForm").classList.remove("active");
@@ -74,7 +73,7 @@
         document.getElementById("loginForm").classList.add("active");
     }
 
-    // Request for OTP send
+    // রেজিস্ট্রেশন ফাংশন
     async function registerUser() {
         const nameInput = document.getElementById("signupName").value.trim();
         const emailInput = document.getElementById("signupEmail").value.trim();
@@ -92,21 +91,27 @@
                 body: JSON.stringify({ name: nameInput, email: emailInput, password: passwordInput })
             });
             const data = await response.json();
-            alert(data.message);
             
             if (response.status === 200) {
                 document.getElementById("inputsSection").style.display = "none";
-                document.getElementById("otpSection").style.display = "block"; // OTP box on
+                document.getElementById("otpSection").style.display = "block";
+                if (data.otp_mode === 'web') {
+                    alert("Network issue! Email could not be sent. \n\nআপনার OTP হলো: " + data.otp);
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                alert(data.message);
             }
         } catch (error) {
             alert("Server connection error!");
         }
     }
 
-    // OTP code match here
+    // OTP ভেরিফিকেশন ফাংশন
     async function verifyOtpCode() {
         const otpVal = document.getElementById("otpInput").value.trim();
-        const emailInput = document.getElementById("signupEmail").value.trim(); // ইমেইল রিড করার জন্য নতুন লাইন
+        const emailInput = document.getElementById("signupEmail").value.trim();
 
         if (!otpVal) {
             alert("Please enter your OTP!");
@@ -117,11 +122,10 @@
             const response = await fetch('/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ otp: otpVal, email: emailInput }) // বডিতে ইমেইল পাঠানো হলো
+                body: JSON.stringify({ otp: otpVal, email: emailInput })
             });
             const data = await response.json();
             alert(data.message);
-
             if (response.status === 200) {
                 showLogin(); 
             }
@@ -130,8 +134,7 @@
         }
     }
     
-
-    // Login function
+    // লগইন ফাংশন (যা কাজ করছিল না)
     async function loginUser() {
         const emailInput = document.getElementById("loginEmail").value.trim();
         const passwordInput = document.getElementById("loginPassword").value.trim();
@@ -150,14 +153,15 @@
             const data = await response.json();
             
             if (response.status === 200) {
-                window.location.href = `/dashboard`;
+                window.location.href = '/dashboard'; 
             } else {
                 alert(data.message);
             }
         } catch (error) {
-            alert("Unable to log in.");
+            alert("Unable to log in. Check server connection.");
         }
     }
 </script>
+
 </body>
 </html>
