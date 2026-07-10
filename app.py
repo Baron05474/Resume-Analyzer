@@ -16,8 +16,7 @@ app.secret_key = "super_secret_session_key_for_resume_analyzer"
 # Gemini Configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
-
+model = genai.GenerativeModel("models/gemini-2.5-flash")
 # SMTP Settings
 SMTP_SERVER = "smtp-relay.brevo.com"
 SMTP_PORT = 587
