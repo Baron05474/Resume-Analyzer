@@ -50,7 +50,7 @@ def send_otp_email(receiver_email, name, otp):
         msg["From"] = "project.verify.ai@gmail.com"
         msg["To"] = receiver_email
         
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=30)
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=10)
         server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, receiver_email, msg.as_string())
