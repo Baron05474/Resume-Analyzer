@@ -107,37 +107,119 @@ def verify_otp():
         return jsonify({"message": "Account Created Successfully!"}), 200
     return jsonify({"message": "Invalid OTP."}), 400
 
+# ৩. Login
+
 @app.route("/login", methods=["POST"])
+
 def login():
+
     data = request.json
-    email, password = data.get("email"), data.get("password")
+
+    email = data.get("email")
+
+    password = data.get("password")
+
+
+
     conn = sqlite3.connect("users.db")
+
     cursor = conn.cursor()
+
     cursor.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
+
     user = cursor.fetchone()
+
     conn.close()
 
+
+
     if user:
+
         session['user_email'] = user[2]
+
         session['user_name'] = user[1]
-        return jsonify({"message": "Login Successful", "name": user[1]}), 200
+
+        return jsonify({
+
+            "message": "Login Successful",
+
+            "name": user[1]
+
+        }), 200
+
+   
+
     return jsonify({"message": "Incorrect email or password."}), 401
+
+
+
+# ৪. Logout
+
+@app.route("/logout")
+
+def logout():
+
+    session.clear()
+
+    return redirect(url_for("home"))
+
+@app.route("/dashboard")
+def dashboard():
+    if "user_email" not in session:
+        return redirect(url_for("home"))
+    return render_template("dashboard.html")
+
+
+
+# ৫. AI Check
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
     if "user_email" not in session:
-        return jsonify({"message": "Unauthorized"}), 401
+        return jsonify({"message": "Unauthorized access! Please log in."}), 401
+
+    if "resume" not in request.files:
+        return jsonify({"message": "No file found."}), 400
+
+    file = request.files["resume"]
+
+    if file.filename == "":
+        return jsonify({"message": "No file selected"}), 400
+
+    # ফাইল টাইপ চেক
+    if file and file.filename.lower().endswith(".pdf"):
+        try:
+            # নিশ্চিত করো যে তুমি PyPDF2 থেকে PdfReader ইমপোর্ট করেছ
+            reader = PdfReader(file)
+            resume_text = ""
+            for page in reader.pages:
+                text = page.extract_text()
+                if text:
+                    resume_text += text
+
+            if not resume_text.strip():
+                return jsonify({"message": "No text could be extracted."}), 400
+
+            # Gemini API call
+            prompt = f"Analyze this resume carefully. Provide an ATS Score out of 100, brief feedback, strengths, and improvement areas. Resume text:\n\n{resume_text}"
+            
+            response = model.generate_content(prompt)
+            analysis_result = response.text
+            
+            return jsonify({"message": "Success", "analysis": analysis_result})
+
+        except Exception as e:
+            return jsonify({"message": f"File Processing Error: {str(e)}"}), 500
     
-    file = request.files.get("resume")
-    if file and file.filename.endswith(".pdf"):
-        reader = PdfReader(file)
-        resume_text = "".join([p.extract_text() for p in reader.pages if p.extract_text()])
-        
-        prompt = f"Analyze this resume: {resume_text}"
-        response = model.generate_content(prompt)
-        return jsonify({"message": "Success", "analysis": response.text})
-    return jsonify({"message": "Invalid file."}), 400
+    
+    return jsonify({"message": "Only PDF files are allowed."}), 400
+
+
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True) 
+
+        import os
+
+        port = int(os.environ.get("PORT", 5000))
+
+        app.run(host="0.0.0.0")
