@@ -166,9 +166,11 @@ def logout():
 def dashboard():
     if "user_email" not in session:
         return redirect(url_for("home"))
-    return render_template("dashboard.html")
 
-
+    return render_template(
+        "dashboard.html",
+        name=session["user_name"]
+    )
 
 # ৫. AI Check
 

@@ -73,7 +73,7 @@
         document.getElementById("loginForm").classList.add("active");
     }
 
-    // রেজিস্ট্রেশন ফাংশন
+    // registration function
     async function registerUser() {
         const nameInput = document.getElementById("signupName").value.trim();
         const emailInput = document.getElementById("signupEmail").value.trim();
@@ -96,7 +96,7 @@
                 document.getElementById("inputsSection").style.display = "none";
                 document.getElementById("otpSection").style.display = "block";
                 if (data.otp_mode === 'web') {
-                    alert("Network issue! Email could not be sent. \n\nআপনার OTP হলো: " + data.otp);
+                    alert("Sorry, {{ name }}. We are currently unable to send an OTP to your email due to a temporary issue. Please use the OTP provided below to continue. \n\nYour OTP is: " + data.otp);
                 } else {
                     alert(data.message);
                 }
@@ -108,7 +108,7 @@
         }
     }
 
-    // OTP ভেরিফিকেশন ফাংশন
+    // OTP verification
     async function verifyOtpCode() {
         const otpVal = document.getElementById("otpInput").value.trim();
         const emailInput = document.getElementById("signupEmail").value.trim();
@@ -134,7 +134,7 @@
         }
     }
     
-    // লগইন ফাংশন (যা কাজ করছিল না)
+    // login function
     async function loginUser() {
         const emailInput = document.getElementById("loginEmail").value.trim();
         const passwordInput = document.getElementById("loginPassword").value.trim();
