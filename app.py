@@ -50,7 +50,7 @@ def send_otp_email(receiver_email, name, otp):
         msg["From"] = "project.verify.ai@gmail.com"
         msg["To"] = receiver_email
         
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=10)
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=5)
         server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, receiver_email, msg.as_string())
@@ -103,7 +103,7 @@ def verify_otp():
         conn.commit()
         conn.close()
         TEMP_OTP_STORE.pop(email, None)
-        return jsonify({"message": "Account Created Successfully!"}), 200
+        return jsonify({"message": "Congratulations! 🎉 Your account has been created successfully.!"}), 200
     return jsonify({"message": "Invalid OTP."}), 400
 
 # ৩. Login
