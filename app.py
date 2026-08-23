@@ -81,7 +81,7 @@ def signup():
         return jsonify({"message": "Email already registered."}), 400
     conn.close()
 
-    otp = str(random.randint(1000, 9999))
+    otp = str(random.randint(10000, 99999))
     TEMP_OTP_STORE[email] = {"name": name, "password": password, "otp": otp}
     
     if send_otp_email(email, name, otp):
