@@ -377,7 +377,7 @@ into a single full-stack application.
 **Baron Bhowmick**
 
 B.Tech in Computer Science & Engineering
-Central University of Rajasthan
+
 
 
 
