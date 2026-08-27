@@ -344,15 +344,6 @@ Possible future improvements include:
 ### 4. Dashboard
 ![Dashboard](assets/dashboard.png)
 
-### Resume Analysis
-
-Add your analysis result screenshot here:
-
-```markdown
-![Resume Analysis](screenshots/resume-analysis.png)
-```
-
----
 
 ## 🎯 Project Purpose
 
