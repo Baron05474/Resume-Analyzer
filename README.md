@@ -210,7 +210,7 @@ Users provide:
 * Email
 * Password
 
-After registration, the application generates a **4-digit OTP** and attempts to send it to the user's email.
+After registration, the application generates a **6-digit OTP** and attempts to send it to the user's email.
 
 ### OTP Verification
 
