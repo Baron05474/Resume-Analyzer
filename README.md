@@ -104,27 +104,6 @@ Resume-Analyzer/
 > `users.db` is automatically created when the application starts.
 
 ---
-
-### Environment Variables Used
-
-| Variable            | Purpose                           |
-| ------------------- | --------------------------------- |
-| `GEMINI_API_KEY`    | Used to access Google's Gemini AI |
-| `PROVIDER_PASSWORD` | Used for SMTP authentication      |
-
-
-
- `.gitignore`:
-
-```gitignore
-.env
-venv/
-__pycache__/
-users.db
-```
-
----
-
 ## 🔐 User Authentication
 
 The application provides a basic authentication system.
