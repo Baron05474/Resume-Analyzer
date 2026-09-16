@@ -105,61 +105,6 @@ Resume-Analyzer/
 
 ---
 
-## ⚙️ Installation
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/Baron05474/Resume-Analyzer.git
-```
-
-### 2. Navigate to the Project Directory
-
-```bash
-cd Resume-Analyzer
-```
-
-### 3. Create a Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-Activate the virtual environment:
-
-**Windows:**
-
-```bash
-venv\Scripts\activate
-```
-
-**macOS/Linux:**
-
-```bash
-source venv/bin/activate
-```
-
----
-
-## 📦 Install Dependencies
-
-Install all required Python packages:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 🔑 Environment Variables
-
-Create a `.env` file in the root directory of the project.
-
-```env
-GEMINI_API_KEY=your_gemini_api_key
-PROVIDER_PASSWORD=brevo_smtp_password
-```
-
 ### Environment Variables Used
 
 | Variable            | Purpose                           |
@@ -177,24 +122,6 @@ venv/
 __pycache__/
 users.db
 ```
-
----
-
-## ▶️ Running the Application
-
-Start the Flask application with:
-
-```bash
-python app.py
-```
-
-The application will run locally on:
-
-```text
-http://127.0.0.1:5000
-```
-
-Open the URL in your browser to access the application.
 
 ---
 
