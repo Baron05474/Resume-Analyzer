@@ -28,28 +28,28 @@ The application follows a simple workflow:
 
 User
  │
- ▼
+ 
 Create Account
  │
- ▼
+ 
 Email OTP Verification
  │
- ▼
+ 
 Login
  │
- ▼
+ 
 Dashboard
  │
- ▼
+ 
 Upload Resume (PDF)
  │
- ▼
+ 
 Extract Resume Text
  │
- ▼
+ 
 Gemini AI Analysis
  │
- ▼
+ 
 ATS Score + Feedback + Suggestions
 
 
