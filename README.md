@@ -153,25 +153,6 @@ This makes the application useful for users who want an initial AI-powered revie
 ### 4. Dashboard
 ![Dashboard](assets/dashboard.png)
 
-
-## 🎯 Project Purpose
-
-The main goal of this project is to build a simple and practical **AI-powered Resume Analyzer** that helps students and job seekers understand the strengths and weaknesses of their resumes.
-
-It also demonstrates the integration of:
-
-* Web development
-* Backend development
-* Database management
-* PDF processing
-* Email verification
-* REST-style API routes
-* Generative AI
-
-into a single full-stack application.
-
----
-
 ## 👨‍💻 Author
 
 **Baron Bhowmick**
