@@ -77,32 +77,7 @@ ATS Score + Feedback + Suggestions
 
 * SMTP
 * Brevo SMTP Relay
-
-### Environment Management
-
-* `python-dotenv`
-
----
-
-## 📂 Project Structure
-
-```text
-Resume-Analyzer/
-│
-├── app.py
-├── requirements.txt
-├── .env
-├── users.db
-│
-├── templates/
-│   ├── landing.html
-│   └── dashboard.html
-│
-└── README.md
-```
-
-> `users.db` is automatically created when the application starts.
-
+  
 ---
 ## 🔐 User Authentication
 
