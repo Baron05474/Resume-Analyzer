@@ -106,7 +106,7 @@ def verify_otp():
         return jsonify({"message": "Congratulations! 🎉 Your account has been created successfully.!"}), 200
     return jsonify({"message": "Invalid OTP."}), 400
 
-# ৩. Login
+# Login
 
 @app.route("/login", methods=["POST"])
 
@@ -152,7 +152,7 @@ def login():
 
 
 
-# ৪. Logout
+# Logout
 
 @app.route("/logout")
 
@@ -172,7 +172,7 @@ def dashboard():
         name=session["user_name"]
     )
 
-# ৫. AI Check
+# AI Check
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
