@@ -187,10 +187,10 @@ def analyze():
     if file.filename == "":
         return jsonify({"message": "No file selected"}), 400
 
-    # ফাইল টাইপ চেক
+    
     if file and file.filename.lower().endswith(".pdf"):
         try:
-            # নিশ্চিত করো যে তুমি PyPDF2 থেকে PdfReader ইমপোর্ট করেছ
+
             reader = PdfReader(file)
             resume_text = ""
             for page in reader.pages:
